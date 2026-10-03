@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react'
+import { useEffect, useRef, useState } from 'react'
 import './AccountApp.css'
 
 const STORAGE_KEY = 'czard-local-account'
@@ -88,6 +88,8 @@ function Icon({ name, size = 20 }) {
 function AccountApp() {
   const [account, setAccount] = useState(readAccount)
   const [path, setPath] = useState(window.location.pathname)
+  const [menuOpen, setMenuOpen] = useState(false)
+  const [soundOn, setSoundOn] = useState(false)
   const [email, setEmail] = useState(() => new URLSearchParams(window.location.search).get('email') || readAccount().email)
   const [notice, setNotice] = useState('')
   const [addressOpen, setAddressOpen] = useState(false)
@@ -95,6 +97,9 @@ function AccountApp() {
   const [cartItems, setCartItems] = useState(readCart)
   const [editingProfile, setEditingProfile] = useState(false)
   const [preferences, setPreferences] = useState(() => readAccount().preferences)
+  const ambientAudio = useRef(null)
+  const storeMenuArea = useRef(null)
+  const menuToggle = useRef(null)
   const [orderFilter, setOrderFilter] = useState('Current')
   const page = path.split('/').filter(Boolean).at(-1) || 'profile'
   const signedInLocally = Boolean(account.email)
@@ -105,6 +110,29 @@ function AccountApp() {
     window.addEventListener('popstate', updatePath)
     return () => window.removeEventListener('popstate', updatePath)
   }, [])
+
+  useEffect(() => () => ambientAudio.current?.pause(), [])
+
+  useEffect(() => {
+    if (!menuOpen) return undefined
+
+    function closeOnOutside(event) {
+      if (!storeMenuArea.current?.contains(event.target)) setMenuOpen(false)
+    }
+
+    function closeOnEscape(event) {
+      if (event.key !== 'Escape') return
+      setMenuOpen(false)
+      menuToggle.current?.focus()
+    }
+
+    document.addEventListener('pointerdown', closeOnOutside)
+    document.addEventListener('keydown', closeOnEscape)
+    return () => {
+      document.removeEventListener('pointerdown', closeOnOutside)
+      document.removeEventListener('keydown', closeOnEscape)
+    }
+  }, [menuOpen])
 
   useEffect(() => {
     if (!cartOpen) return undefined
@@ -133,6 +161,25 @@ function AccountApp() {
     setPath(nextPath)
     setNotice('')
     window.scrollTo(0, 0)
+  }
+
+  async function toggleAmbientSound() {
+    const audio = ambientAudio.current
+    if (!audio) return
+
+    if (audio.paused) {
+      try {
+        await audio.play()
+        setSoundOn(true)
+      } catch {
+        setSoundOn(false)
+        setNotice('Ambient sound could not be played.')
+      }
+      return
+    }
+
+    audio.pause()
+    setSoundOn(false)
   }
 
   function saveAccount(nextAccount) {
@@ -173,6 +220,8 @@ function AccountApp() {
   }
 
   function signOut() {
+    ambientAudio.current?.pause()
+    setSoundOn(false)
     saveAccount(emptyAccount())
     setPreferences({ email: false, sms: false })
     setEmail('')
@@ -225,6 +274,7 @@ function AccountApp() {
 
   return (
     <main className="local-account">
+      <audio ref={ambientAudio} loop preload="none" src="/www.czard.com/cdn/shop/t/9/assets/czard-ambientb25a.mp3" />
       {showLocalSignIn ? (
         <section className="local-signin" aria-labelledby="account-title">
           <a className="local-account__brand" href="/" aria-label="CZARD home">CZARD</a>
@@ -242,7 +292,27 @@ function AccountApp() {
       ) : (
         <div className="local-account__layout">
           <aside className="local-account__sidebar">
-            <div className="local-account__side-brand"><span className="local-account__menu-mark" aria-hidden="true">☰</span><span className="local-account__sound-mark" aria-hidden="true"><i /> SOUND</span></div>
+            <div className="local-account__navigation-shell" ref={storeMenuArea}>
+              <div className="local-account__side-brand">
+                <button aria-controls="store-navigation" aria-expanded={menuOpen} aria-label={menuOpen ? 'Close store navigation' : 'Open store navigation'} className="local-account__menu-toggle" onClick={() => setMenuOpen((open) => !open)} ref={menuToggle} type="button">
+                  <span className="local-account__menu-mark" aria-hidden="true">{menuOpen ? '×' : '☰'}</span>
+                </button>
+                <button aria-label={soundOn ? 'Pause ambient sound' : 'Play ambient sound'} aria-pressed={soundOn} className="local-account__sound-toggle" onClick={toggleAmbientSound} type="button"><span className="local-account__sound-mark" aria-hidden="true"><i /><span>SOUND</span></span></button>
+              </div>
+              {menuOpen && (
+                <nav aria-label="Store navigation" className="local-account__main-menu" id="store-navigation">
+                  <ol>
+                    <li><a href="/"> <span>01</span>HOME</a></li>
+                    <li><a href="/www.czard.com/collections/all.html"><span>02</span>ALL WATCHES</a></li>
+                    <li><a href="/www.czard.com/collections/all.html"><span>03</span>ACCESSORIES</a></li>
+                    <li><a href="/www.czard.com/pages/about-us.html"><span>04</span>ABOUT CZARD</a></li>
+                    <li><a href="/www.czard.com/pages/contact.html"><span>05</span>CONTACT US</a></li>
+                    <li><a href="/www.czard.com/pages/faqs.html"><span>06</span>FAQs</a></li>
+                  </ol>
+                  <p>CZARD</p>
+                </nav>
+              )}
+            </div>
             <nav aria-label="Account pages" className="local-account__nav">
               {navigation.map((item) => (
                 <a aria-current={page === item.path.split('/').at(-1) ? 'page' : undefined} className={page === item.path.split('/').at(-1) ? 'is-active' : ''} href={item.path} key={item.path} onClick={(event) => { event.preventDefault(); navigate(item.path) }}>

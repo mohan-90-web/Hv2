@@ -467,11 +467,68 @@
 .local-account__sidebar {
   position: sticky;
   top: 0;
+  z-index: 5;
   height: 100vh;
   box-sizing: border-box;
   padding: 27px 21px 25px;
   border-right: 1px solid #dededb;
   background: #fff;
+}
+
+.local-account__navigation-shell {
+  position: relative;
+  z-index: 20;
+}
+
+.local-account__main-menu {
+  position: absolute;
+  top: 41px;
+  left: 21px;
+  z-index: 30;
+  box-sizing: border-box;
+  width: min(342px, calc(100vw - 64px));
+  padding: 15px 24px 18px;
+  border: 1px solid #eadcc7;
+  background: #fff1df;
+  box-shadow: 0 18px 40px rgba(34, 25, 13, .16);
+}
+
+.local-account__main-menu ol {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.local-account__main-menu a {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  min-height: 52px;
+  border-bottom: 1px solid #e7dac8;
+  color: #352a1d;
+  font-family: 'CZARD Fitzgerald', Georgia, serif;
+  font-size: 17px;
+  text-decoration: none;
+  transition: color .16s ease;
+}
+
+.local-account__main-menu a:hover {
+  color: #8a6b42;
+}
+
+.local-account__main-menu a > span {
+  flex: 0 0 16px;
+  color: #a5957e;
+  font-family: 'Open Sans', 'Segoe UI', sans-serif;
+  font-size: 9px;
+  letter-spacing: 1px;
+}
+
+.local-account__main-menu > p {
+  margin: 17px 0 0;
+  color: #a5957e;
+  font-size: 8px;
+  letter-spacing: 3px;
 }
 
 .local-account__side-brand {
@@ -480,6 +537,30 @@
   gap: 25px;
   height: 26px;
   margin: 0 24px 2px;
+}
+
+.local-account__menu-toggle,
+.local-account__sound-toggle {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  flex: 0 0 auto;
+  padding: 0;
+  border: 0;
+  color: inherit;
+  background: transparent;
+  cursor: pointer;
+}
+
+.local-account__menu-toggle {
+  width: 26px;
+  height: 26px;
+}
+
+.local-account__sound-toggle:focus-visible,
+.local-account__menu-toggle:focus-visible {
+  outline: 2px solid var(--account-green);
+  outline-offset: 3px;
 }
 
 .local-account__menu-mark {
@@ -503,6 +584,24 @@
   border-left: 2px solid currentColor;
   border-right: 2px solid currentColor;
   opacity: .8;
+}
+
+.local-account__sound-toggle[aria-pressed='true'] {
+  color: var(--account-green);
+}
+
+.local-account__sound-toggle[aria-pressed='true'] .local-account__sound-mark i {
+  animation: account-sound-pulse .7s ease-in-out infinite alternate;
+}
+
+@keyframes account-sound-pulse {
+  to { transform: scaleY(.55); }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .local-account__sound-toggle[aria-pressed='true'] .local-account__sound-mark i {
+    animation: none;
+  }
 }
 
 .local-account__nav {
