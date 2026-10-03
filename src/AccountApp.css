@@ -863,11 +863,24 @@
   align-items: center;
   gap: 12px;
   min-height: 50px;
-  border-bottom: 1px solid #efefed;
 }
 
 .preference-row:first-of-type {
   margin-top: 9px;
+}
+
+.preference-row + .preference-row {
+  position: relative;
+  margin-top: 16px;
+}
+
+.preference-row + .preference-row::before {
+  position: absolute;
+  top: -8px;
+  right: 0;
+  left: 0;
+  border-top: 1px solid #efefed;
+  content: '';
 }
 
 .preference-row > span:nth-child(2) {

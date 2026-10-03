@@ -4,6 +4,46 @@ import './App.css'
 
 const LOCAL_CART_KEY = 'czard-local-cart'
 
+function isShopifyRuntimeReference(value = '') {
+  return /(cdn\.shopify\.com|shopifycloud|fonts\.shopifycdn\.com|checkout\.shopify|shopify\.com)/i.test(value)
+}
+
+function stripShopifyRuntime(documentRef) {
+  if (!documentRef) return
+
+  const shopifySelectors = [
+    'script[src*="shopify"]',
+    'script[src*="shopifycloud"]',
+    'script[data-source-attribution*="shopify"]',
+    'script#shopify-features',
+    'script#shop-js-analytics',
+    'script#__st',
+    'script#form-persister',
+    'meta[id*="shopify"]',
+    'meta[name*="shopify"]',
+    'link[href*="shopify"]',
+    'link[href*="fonts.shopifycdn"]',
+  ]
+
+  shopifySelectors.forEach((selector) => {
+    documentRef.querySelectorAll(selector).forEach((node) => node.remove())
+  })
+
+  Array.from(documentRef.scripts).forEach((script) => {
+    const text = (script.textContent || '').trim()
+    if (/Shopify\.|shopify/i.test(text)) {
+      script.remove()
+    }
+  })
+
+  try {
+    documentRef.defaultView.Shopify = undefined
+    documentRef.defaultView.window = documentRef.defaultView
+  } catch {
+    // no-op: keep local app behavior strict
+  }
+}
+
 function App() {
   const storefrontFrame = useRef(null)
 
@@ -14,6 +54,8 @@ function App() {
   function handleStorefrontLoad() {
     const document = storefrontFrame.current?.contentDocument
     if (!document) return
+
+    stripShopifyRuntime(document)
 
     function capturedRoute(link) {
       const url = new URL(link.href)
@@ -29,6 +71,13 @@ function App() {
       return `/www.czard.com${routePath}.html${url.search}${url.hash}`
     }
 
+    Array.from(document.querySelectorAll('a, img, script, source, link')).forEach((node) => {
+      const candidate = node.href || node.src || node.getAttribute('src') || ''
+      if (isShopifyRuntimeReference(candidate)) {
+        node.remove()
+      }
+    })
+
     document.querySelectorAll('a').forEach((link) => {
       const route = capturedRoute(link)
       if (route) link.href = route
@@ -36,7 +85,19 @@ function App() {
 
     document.defaultView?.addEventListener('submit', (event) => {
       const form = event.target
-      if (form?.tagName !== 'FORM' || !form.action.includes('/cart/add')) return
+      if (form?.tagName !== 'FORM') return
+
+      const actionUrl = form.action || ''
+      if (isShopifyRuntimeReference(actionUrl)) {
+        event.preventDefault()
+        event.stopImmediatePropagation()
+        if (window.confirm('Shopify fallback is disabled. This storefront must use the local app flow only.')) {
+          return
+        }
+        return
+      }
+
+      if (!actionUrl.includes('/cart/add')) return
 
       event.preventDefault()
       event.stopImmediatePropagation()
@@ -87,6 +148,14 @@ function App() {
     document.addEventListener('click', (event) => {
       const link = event.target.closest('a')
       if (!link) return
+
+      const href = link.getAttribute('href') || ''
+      if (isShopifyRuntimeReference(href)) {
+        event.preventDefault()
+        event.stopImmediatePropagation()
+        return
+      }
+
       const route = capturedRoute(link)
       if (!route) return
       event.preventDefault()
