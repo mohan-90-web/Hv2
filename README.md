@@ -37,3 +37,18 @@ The serial-number picker UI is present, but its database-backed number chart and
 - `POST /api/serials/revalidate`: validate all held numbers in the cart before checkout.
 
 The picker implementation is in [`public/portal.czard.com/czard-serial-picker.js`](public/portal.czard.com/czard-serial-picker.js). Its API origin is configurable through the script's `data-portal` attribute. The backend must also validate input, rate-limit public endpoints, protect hold tokens, and perform inventory changes transactionally; database tables alone are not sufficient.
+
+## Profile Authentication Backend
+
+Profile sign-in is currently a local demonstration flow: entering a valid-looking email stores account data in this browser's `localStorage`. It does not verify the customer's identity, use a server-side user database, or create a secure authenticated session. Do not treat this as production authentication. Shopify authentication is not required for the planned first-party profile flow.
+
+### Pending Implementation
+
+- Choose and implement the first-party sign-in method. If using email/password, store only a strong password hash, never a plaintext password; normalize and uniquely constrain email addresses.
+- Add email verification and single-use, expiring password-reset tokens. Store only hashes of verification/reset tokens and invalidate them after use.
+- Create server-managed sessions using secure, HTTP-only, SameSite cookies, with expiry, rotation, logout/revocation, and CSRF protection where applicable.
+- Persist profile fields, addresses, and communication preferences against an internal user ID. Enforce ownership on every read and write so a customer can access only their own records.
+- Require authentication and authorization on profile, address, order, and preference APIs. Validate inputs, rate-limit sign-in/reset endpoints, and avoid revealing whether an email is registered.
+- Migrate existing browser-local account data only through an explicit, verified account-linking flow; localStorage values alone do not prove identity.
+
+The frontend must call the deployed first-party authentication/profile API instead of treating localStorage as the source of truth. Until that backend is implemented, profile data and sign-in state are limited to the current browser and can be cleared or changed by that browser's user.
