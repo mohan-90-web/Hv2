@@ -3176,12 +3176,9 @@ first.parentNode.insertBefore(script, first);
 
 
   <m-account-component class="m-account-component m:block m-header__account m-header__account-icon">
-    <shopify-store store-domain="index.html" country="IN" language="en"></shopify-store>
-<shopify-account class="m:block" menu="customer-account-main-menu">
       
-        <span
-          slot="signed-out-avatar"
-          aria-hidden="true"
+        <a
+          href="/account/login"
           aria-label="Account"
           class="account-button m:display-flex m:justify-center m:items-center"
         >
@@ -3197,13 +3194,12 @@ first.parentNode.insertBefore(script, first);
                 >
                   <path d="M313.6 304c-28.7 0-42.5 16-89.6 16-47.1 0-60.8-16-89.6-16C60.2 304 0 364.2 0 438.4V464c0 26.5 21.5 48 48 48h352c26.5 0 48-21.5 48-48v-25.6c0-74.2-60.2-134.4-134.4-134.4zM400 464H48v-25.6c0-47.6 38.8-86.4 86.4-86.4 14.6 0 38.3 16 89.6 16 51.7 0 74.9-16 89.6-16 47.6 0 86.4 38.8 86.4 86.4V464zM224 288c79.5 0 144-64.5 144-144S303.5 0 224 0 80 64.5 80 144s64.5 144 144 144zm0-240c52.9 0 96 43.1 96 96s-43.1 96-96 96-96-43.1-96-96 43.1-96 96-96z"/>
                 </svg>
-                <span class="m-tooltip__content">Log in</span>
+                <span class="m-tooltip__content">Account</span>
               </span>
             
           
-        </span>
+        </a>
       
-    </shopify-account>
   </m-account-component>
 
 
@@ -3609,14 +3605,23 @@ first.parentNode.insertBefore(script, first);
            the stage, so what gets rendered is the stage's own dimensions
            rather than something smaller boxed inside them. !important because
            Sirv writes those sizes inline. */
-        .spin-stage .Sirv {
+        .spin-stage .local-spin {
             display: block;
             width: 100%;
             height: 100%;
+          overflow: hidden;
+          pointer-events: auto;
+          touch-action: pan-y;
+          user-select: none;
+          -webkit-user-select: none;
         }
-        .spin-stage .Sirv > * {
-            width: 100% !important;
-            height: 100% !important;
+        .spin-stage .local-spin img {
+          display: block;
+          width: 100%;
+          height: 100%;
+          object-fit: contain;
+          pointer-events: none;
+          -webkit-user-drag: none;
         }
 
         /* Horizontal drags spin the sequence; vertical ones must not. pan-y
@@ -3983,18 +3988,18 @@ first.parentNode.insertBefore(script, first);
                 <a id="hero-cta" href="#">Enter Experience</a>
             </div>
         </div><div class="spin-stage" data-spin-key="spin-1">
-              <div class="Sirv" data-src="https://mjrepublic.sirv.com/Spins/Veni-Black-360-Final/Veni-Black-360-Final.spin" data-options="fullscreen.enable:false; thumbnails.enable:false; arrows:false; autospin:off; autospin.enable:false; hint:false; hint.message.enable:false; zoom.enable:false;"></div>
+              <div class="local-spin" data-spin-folder="veni" data-frame-count="241" aria-label="Veni watch 360-degree view"><img src="/www.czard.com/cdn/shop/360/veni/0_0000.png" alt="Veni watch" draggable="false"></div>
             </div><div class="spin-stage" data-spin-key="spin-2">
-              <div class="Sirv" data-src="https://mjrepublic.sirv.com/Spins/Vidi-Ivory-360-Final/Vidi-Ivory-360-Final.spin" data-options="fullscreen.enable:false; thumbnails.enable:false; arrows:false; autospin:off; autospin.enable:false; hint:false; hint.message.enable:false; zoom.enable:false;"></div>
+              <div class="local-spin" data-spin-folder="vidi" data-frame-count="241" aria-label="Vidi watch 360-degree view"><img src="/www.czard.com/cdn/shop/360/vidi/0_0000.png" alt="Vidi watch" draggable="false"></div>
             </div><div class="spin-stage" data-spin-key="spin-3">
-              <div class="Sirv" data-src="https://mjrepublic.sirv.com/Spins/Vici-Green-360-Final/Vici-Green-360-Final.spin" data-options="fullscreen.enable:false; thumbnails.enable:false; arrows:false; autospin:off; autospin.enable:false; hint:false; hint.message.enable:false; zoom.enable:false;"></div>
+              <div class="local-spin" data-spin-folder="vici" data-frame-count="241" aria-label="Vici watch 360-degree view"><img src="/www.czard.com/cdn/shop/360/vici/0_0000.png" alt="Vici watch" draggable="false"></div>
             </div><div class="spin-stage" data-spin-key="spin-4">
-              <div class="Sirv" data-src="https://mjrepublic.sirv.com/Spins/CreamV2_360/CreamV2_360.spin" data-options="fullscreen.enable:false; thumbnails.enable:false; arrows:false; autospin:off; autospin.enable:false; hint:false; hint.message.enable:false; zoom.enable:false;"></div>
+              <div class="local-spin" data-spin-folder="ecru" data-frame-count="151" aria-label="Ecru watch 360-degree view"><img src="/www.czard.com/cdn/shop/360/ecru/0_0000.png" alt="Ecru watch" draggable="false"></div>
             </div><div class="spin-stage" data-spin-key="spin-5">
-              <div class="Sirv" data-src="https://mjrepublic.sirv.com/Spins/Siwss_Blue_360/Siwss_Blue_360.spin" data-options="fullscreen.enable:false; thumbnails.enable:false; arrows:false; autospin:off; autospin.enable:false; hint:false; hint.message.enable:false; zoom.enable:false;"></div>
+              <div class="local-spin" data-spin-folder="lac-leman" data-frame-count="151" aria-label="Lac Leman watch 360-degree view"><img src="/www.czard.com/cdn/shop/360/lac-leman/0_0000.png" alt="Lac Leman watch" draggable="false"></div>
             </div><div class="spin-stage" data-spin-key="spin-6">
-              <div class="Sirv" data-src="https://mjrepublic.sirv.com/Spins/Swiss_Green_360/Green_360.spin" data-options="fullscreen.enable:false; thumbnails.enable:false; arrows:false; autospin:off; autospin.enable:false; hint:false; hint.message.enable:false; zoom.enable:false;"></div>
-            </div><script src="../scripts.sirv.com/sirvjs/v3/sirv.js" defer="defer"></script><div id="dots"></div>
+              <div class="local-spin" data-spin-folder="jura-gruen" data-frame-count="151" aria-label="Jura Gruen watch 360-degree view"><img src="/www.czard.com/cdn/shop/360/jura-gruen/0_0000.png" alt="Jura Gruen watch" draggable="false"></div>
+            </div><script src="/www.czard.com/cdn/shop/360/viewer.js" defer="defer"></script><div id="dots"></div>
         <div id="cue">
             <button id="cue-prev" type="button" aria-label="Previous scene">&#8592;</button>
             <button id="cue-next" type="button" aria-label="Next scene">&#8594;</button>
@@ -6568,33 +6573,8 @@ first.parentNode.insertBefore(script, first);
            while reveal is still 0 and the plane invisible, so the jump is
            never seen. This is the only bit of the spin API in play. */
         function resolveSpin (stage) {
-            const S = window.Sirv;
-            const el = stage.el.querySelector('.Sirv');
-            if (!S || !el) return null;
-
-            const usable = o => (o && typeof o.jumpCols === 'function') ? o
-                              : (o && o.spin && typeof o.spin.jumpCols === 'function') ? o.spin
-                              : null;
-
-            let viewer = null;
-            try { if (typeof S.getInstance === 'function') viewer = S.getInstance(el); } catch (err) { /* not built yet */ }
-            if (!viewer) {
-                try { if (S.viewer && typeof S.viewer.getInstance === 'function') viewer = S.viewer.getInstance(el); } catch (err) { /* ditto */ }
-            }
-            if (!viewer) return null;
-
-            const direct = usable(viewer);
-            if (direct) return direct;
-
-            if (typeof viewer.child === 'function') {
-                for (let i = 0; i < 8; i++) {
-                    let child = null;
-                    try { child = viewer.child(i); } catch (err) { continue; }
-                    const found = usable(child);
-                    if (found) return found;
-                }
-            }
-            return null;
+          const viewer = stage.el.querySelector('.local-spin');
+          return viewer && typeof viewer.jumpCols === 'function' ? viewer : null;
         }
 
         /* Always column 0 — the frame the sequence was authored to open on.
@@ -6631,7 +6611,7 @@ first.parentNode.insertBefore(script, first);
                 if (++tries > 160) {   // ~20s
                     clearInterval(poll);
                     const missing = spinStages.filter(s => !s.spin).map(s => SCENES[s.index].title);
-                    console.warn(`[golden-fade] Sirv spin API unreachable for: ${missing.join(', ')} — those will not re-home on reveal.`);
+                    console.warn(`[golden-fade] Local spin viewer unavailable for: ${missing.join(', ')} — those will not re-home on reveal.`);
                 }
             }, 125);
         })();
